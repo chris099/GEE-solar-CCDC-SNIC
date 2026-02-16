@@ -1,181 +1,237 @@
-MA Solar CCDC Workflow – Google Earth Engine Code
-Overview
+# Script Documentation – MA Solar CCDC Workflow
 
-This repository contains Google Earth Engine (GEE) JavaScript scripts used to detect and quantify utility-scale solar installations and associated land cover changes in Massachusetts (2005–2024).
+This folder contains the full Google Earth Engine (GEE) JavaScript implementation of the Massachusetts solar change detection workflow (2005–2024).
 
-The workflow integrates:
+All scripts are designed to be executed in the Google Earth Engine Code Editor.
 
-Continuous Change Detection and Classification (CCDC)
+---
 
-SNIC superpixel segmentation
+# 🔁 Recommended Execution Order
 
-Object-based Random Forest classification
+Scripts are numbered to reflect the logical processing order.
 
-Omission filtering
+---
 
-Stratified sampling for accuracy assessment
+## 00_config.js  
+**Global configuration file**
 
-Design-based unbiased area estimation
+Defines:
+- Study region (Massachusetts boundary)
+- Asset paths
+- Global parameters
+- Band definitions
+- Time range
 
-All scripts are designed to run in the Google Earth Engine Code Editor.
+Run this first if other scripts depend on shared variables.
 
-Study Objective
+---
 
-The primary objective of this workflow is to:
+## 01_ccdc_parameter_test.js  
+**CCDC parameter sensitivity testing**
 
-Detect utility-scale solar installations.
+Used to:
+- Tune lambda
+- Evaluate minimum observations
+- Adjust segmentation behavior
 
-Distinguish solar-associated deforestation from other land cover change.
+Purpose: Optimize CCDC model stability before full run.
 
-Derive installation year using CCDC break timing.
+---
 
-Quantify annual and cumulative solar expansion area.
+## 02_ccdc_run.js  
+**Main CCDC execution**
 
-Estimate accuracy and unbiased area following stratified sampling design.
+Runs harmonic time-series modeling over Landsat imagery.
 
-Processing Pipeline
-1. CCDC Time-Series Modeling
+Outputs:
+- Break timing (tBreak)
+- Coefficients
+- Slopes
+- Magnitudes
 
-Landsat time series (2005–2024) are modeled using harmonic regression through CCDC.
+This produces the base CCDC coefficient image collection.
 
-Extracted metrics include:
+---
 
-Change magnitude (*_DIF)
+## 03_ccdc_extract_features.js  
+**Feature extraction from CCDC results**
 
-Break timing (*_tBreak)
+Extracts:
+- Change magnitude (DIF)
+- Slopes
+- Harmonic amplitudes
+- Synthetic end-of-period values
 
-Slopes (*_SLP_LAST)
+Prepares features for segmentation and classification.
 
-Amplitudes (*_AMP1_LAST)
+---
 
-Final-year synthetic values (Final_*)
+## 04_mask_changes.js  
+**Change filtering and masking**
 
-These features form the basis for segmentation and classification.
+Applies:
+- Logical filters
+- Threshold masks
+- Candidate change pixel extraction
 
-2. SNIC Segmentation
+Purpose: Reduce noise before object-based classification.
 
-Superpixel segmentation is applied to CCDC-derived features to:
+---
 
-Reduce pixel-level noise
+## 05_ccdc_snic.js  
+**SNIC superpixel segmentation**
 
-Convert spectral-temporal features into object-level statistics
+Converts pixel-level features into object-level units.
 
-Enable object-based classification
+Outputs:
+- Segmented objects
+- Object-level mean feature values
 
-Multi-scale SNIC outputs are fused to produce stable segmentation objects.
+Purpose: Enable object-based classification.
 
-3. Random Forest Classification
+---
 
-Object-based Random Forest classification assigns land change classes:
+## 06_randomforest_changeclassification.js  
+**Random Forest classification**
 
-Class	Description
-1	Other land change
-2	Solar after deforestation
-3	Other solar installation
-4	Solar buffer
-5	Potential solar
-6	Deforestation near solar
+Trains and applies object-based Random Forest classifier.
 
-Variable importance diagnostics are computed for model interpretation.
+Classes include:
+1 – Other land change  
+2 – Solar after deforestation  
+3 – Other solar  
+4 – Solar buffer  
+5 – Potential solar  
+6 – Deforestation near solar  
 
-4. Omission Filtering
+Outputs classified change map.
 
-Additional filtering is applied to:
+---
 
-Identify potential missed solar installations
+## 07_rf_viewer.js  
+**Classification visualization interface**
 
-Refine ambiguous classifications
+Interactive UI to:
+- Inspect RF outputs
+- Explore classification results
+- Compare layers
 
-Incorporate fuzzy probability thresholds
+Used for validation and interpretation.
 
-This step improves detection robustness prior to accuracy assessment.
+---
 
-5. Solar Installation Year Mapping
+## 08_accuracy_assessment_stratifiedsampling.js  
+**Stratified sampling for accuracy assessment**
 
-Solar installation year is derived from:
+Generates:
+- Stratified random samples
+- Validation dataset
 
-NDVI_tBreak
+Used for design-based inference.
 
-Albedo_tBreak
+---
 
-Conditional logic for class-specific adjustment
+## 09_sample_interpreter.js  
+**Interactive reference interpretation tool**
 
-Annual solar area (2005–2024) is computed using:
+UI interface to:
+- Manually interpret samples
+- Assign change labels
+- Record deforestation and solar dates
+- Store interpretation metadata
 
-Pixel-area reduction
+Critical for validation workflow.
 
-Masked class strata
+---
 
-Outputs include:
+## 10_confusionmatrix.js  
+**Accuracy statistics**
 
-Solar installation year raster
+Computes:
+- Confusion matrix
+- Overall accuracy
+- Producer’s accuracy
+- User’s accuracy
 
-Annual area statistics (km²)
+Supports unbiased area estimation.
 
-Total cumulative solar area
+---
 
-6. Accuracy Assessment & Area Estimation
+## 11_map_results_ccdc_viewer.js  
+**CCDC results viewer**
 
-Implements:
+Visualization UI for:
+- Break timing
+- Magnitude
+- Slopes
+- Harmonic components
 
-Stratified random sampling
+Used for temporal inspection.
 
-Confusion matrix generation
+---
 
-Producer’s and User’s accuracy
+## 12_1_solar_associated_deforestation_year.js  
+**Solar-associated deforestation year mapping**
 
-Design-based unbiased area estimation
+Derives:
+- Deforestation year from CCDC break timing
+- Annual deforestation area (km²)
+- Total deforestation area
 
-This framework follows statistically rigorous inference for map-based area estimation.
+Includes:
+- Yearly map visualization
+- Annual area chart
+- Export to GeoTIFF
 
-Data Dependencies
+---
 
-The scripts require the following Earth Engine assets:
+## 12_2_solar_installation_year.js  
+**Solar installation year mapping**
 
-projects/kangjoon/assets/MA_Solar/
+Derives:
+- Solar installation year
+- Class-adjusted break timing
+- Annual solar expansion area (km²)
 
+Includes:
+- Yearly visualization
+- Area statistics
+- Export to GeoTIFF
 
-These include:
+---
 
-CCDC coefficient image collections
+# 🖥 Execution Environment
 
-SNIC-derived feature stacks
+All scripts are designed for:
 
-Random Forest classification outputs
-
-Reference interpretation samples
-
-Massachusetts boundary data
-
-Asset paths must be updated if the workflow is replicated in another project.
-
-Execution Environment
-
-All scripts are intended to run in:
-
-Google Earth Engine Code Editor
+Google Earth Engine Code Editor  
 https://code.earthengine.google.com/
 
-No external libraries or local dependencies are required.
+To run:
+1. Open a new script in GEE
+2. Copy and paste desired `.js` file
+3. Update asset paths if necessary
+4. Run
+5. Start export tasks manually
 
-Study Region
+---
 
-Massachusetts, USA
-Spatial resolution: 30 meters
-Temporal coverage: 2005–2024
+# 📊 Outputs
 
-Citation
+Primary outputs include:
 
-If using components of this workflow, please cite:
+- CCDC coefficient image collections
+- Object-based classification map
+- Solar installation year raster
+- Solar-associated deforestation year raster
+- Annual area statistics
+- Accuracy metrics
 
-Cho, K., Woodcock, C.E., et al.
-Detecting Utility-Scale Solar Installations and Associated Land Cover Changes Using Spatiotemporal Segmentation of Landsat Imagery.
-Science of Remote Sensing.
+---
 
-Notes
+# ⚠️ Notes
 
-The workflow is scalable to other regions with asset path modification.
-
-Designed for statewide monitoring of utility-scale solar expansion.
-
-Integrates time-series modeling, object-based classification, and statistical inference within a unified GEE environment.
+- Spatial resolution: 30 m (Landsat)
+- Temporal coverage: 2005–2024
+- Designed for Massachusetts statewide analysis
+- Requires pre-existing Earth Engine assets
