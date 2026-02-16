@@ -16,7 +16,18 @@ All processing is implemented in Google Earth Engine.
 
 ---
 
-## Scientific Objective
+# 📚 Citation
+
+If you use this code, methodology, or derived products, please cite:
+
+Cho, K., Woodcock, C.E., et al. (2025).  
+**Detecting Utility-Scale Solar Installations and Associated Land Cover Changes Using Spatiotemporal Segmentation of Landsat Imagery.**  
+*Science of Remote Sensing*.  
+https://doi.org/10.1016/j.srs.2025.XXXXXX
+
+---
+
+## Research Objective
 
 The workflow aims to:
 
@@ -28,7 +39,7 @@ The workflow aims to:
 
 ---
 
-## Study Region
+## Study Area
 
 - Massachusetts, USA
 - Spatial resolution: 30 m (Landsat)
@@ -93,11 +104,3 @@ All scripts are designed for:
 
 Google Earth Engine Code Editor  
 https://code.earthengine.google.com/
-
----
-
-## Citation
-
-Cho, K., Woodcock, C.E., et al.  
-Detecting Utility-Scale Solar Installations and Associated Land Cover Changes Using Spatiotemporal Segmentation of Landsat Imagery.  
-Science of Remote Sensing.
