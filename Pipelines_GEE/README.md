@@ -1,7 +1,7 @@
-📂 Code Directory – MA Solar CCDC Workflow
+MA Solar CCDC Workflow – Google Earth Engine Code
 Overview
 
-This directory contains Google Earth Engine (GEE) JavaScript scripts used to detect and quantify utility-scale solar installations and associated land cover changes in Massachusetts (2005–2024).
+This repository contains Google Earth Engine (GEE) JavaScript scripts used to detect and quantify utility-scale solar installations and associated land cover changes in Massachusetts (2005–2024).
 
 The workflow integrates:
 
@@ -15,55 +15,58 @@ Omission filtering
 
 Stratified sampling for accuracy assessment
 
-Unbiased area estimation
+Design-based unbiased area estimation
 
-All scripts are written for execution in the Google Earth Engine Code Editor.
+All scripts are designed to run in the Google Earth Engine Code Editor.
 
-Workflow Structure
+Study Objective
 
-The processing pipeline follows the sequence below:
+The primary objective of this workflow is to:
 
-1️⃣ CCDC Time-Series Modeling
+Detect utility-scale solar installations.
 
-Build harmonic models using Landsat time series
+Distinguish solar-associated deforestation from other land cover change.
 
-Extract:
+Derive installation year using CCDC break timing.
 
-Change magnitudes
+Quantify annual and cumulative solar expansion area.
 
-Break timing (tBreak)
+Estimate accuracy and unbiased area following stratified sampling design.
 
-Slopes and amplitudes
+Processing Pipeline
+1. CCDC Time-Series Modeling
 
-Peak synthetic values
+Landsat time series (2005–2024) are modeled using harmonic regression through CCDC.
 
-Key outputs:
+Extracted metrics include:
 
-*_DIF
+Change magnitude (*_DIF)
 
-*_tBreak
+Break timing (*_tBreak)
 
-*_SLP_LAST
+Slopes (*_SLP_LAST)
 
-Final_*
+Amplitudes (*_AMP1_LAST)
 
-2️⃣ SNIC Segmentation
+Final-year synthetic values (Final_*)
 
-Apply superpixel segmentation on CCDC-derived features
+These features form the basis for segmentation and classification.
 
-Fuse multi-scale SNIC outputs
+2. SNIC Segmentation
 
-Convert pixel-based metrics to object-level features
+Superpixel segmentation is applied to CCDC-derived features to:
 
-Purpose:
+Reduce pixel-level noise
 
-Reduce salt-and-pepper noise
+Convert spectral-temporal features into object-level statistics
 
 Enable object-based classification
 
-3️⃣ Random Forest Classification
+Multi-scale SNIC outputs are fused to produce stable segmentation objects.
 
-Object-level classification of land cover change into:
+3. Random Forest Classification
+
+Object-based Random Forest classification assigns land change classes:
 
 Class	Description
 1	Other land change
@@ -73,21 +76,21 @@ Class	Description
 5	Potential solar
 6	Deforestation near solar
 
-Variable importance is computed for diagnostic purposes.
+Variable importance diagnostics are computed for model interpretation.
 
-4️⃣ Omission Filtering
+4. Omission Filtering
 
-Additional filtering to detect:
+Additional filtering is applied to:
 
-Potential missed solar installations
+Identify potential missed solar installations
 
-Ambiguous RF predictions
+Refine ambiguous classifications
 
-Fuzzy probability-based refinements
+Incorporate fuzzy probability thresholds
 
-This stage refines the classification product prior to accuracy assessment.
+This step improves detection robustness prior to accuracy assessment.
 
-5️⃣ Installation Year Mapping
+5. Solar Installation Year Mapping
 
 Solar installation year is derived from:
 
@@ -95,23 +98,23 @@ NDVI_tBreak
 
 Albedo_tBreak
 
-Conditional adjustment logic for class 2 objects
+Conditional logic for class-specific adjustment
 
 Annual solar area (2005–2024) is computed using:
 
-Pixel area reduction
+Pixel-area reduction
 
-Masked classification strata
+Masked class strata
 
-Outputs:
+Outputs include:
 
 Solar installation year raster
 
 Annual area statistics (km²)
 
-Total cumulative area
+Total cumulative solar area
 
-6️⃣ Accuracy Assessment & Unbiased Area Estimation
+6. Accuracy Assessment & Area Estimation
 
 Implements:
 
@@ -121,11 +124,18 @@ Confusion matrix generation
 
 Producer’s and User’s accuracy
 
-Area estimation consistent with design-based inference
+Design-based unbiased area estimation
+
+This framework follows statistically rigorous inference for map-based area estimation.
 
 Data Dependencies
 
-The scripts assume access to the following Earth Engine assets:
+The scripts require the following Earth Engine assets:
+
+projects/kangjoon/assets/MA_Solar/
+
+
+These include:
 
 CCDC coefficient image collections
 
@@ -135,14 +145,9 @@ Random Forest classification outputs
 
 Reference interpretation samples
 
-Massachusetts boundary
+Massachusetts boundary data
 
-These assets are stored under:
-
-projects/kangjoon/assets/MA_Solar/
-
-
-Paths must be updated if reproduced elsewhere.
+Asset paths must be updated if the workflow is replicated in another project.
 
 Execution Environment
 
@@ -151,7 +156,13 @@ All scripts are intended to run in:
 Google Earth Engine Code Editor
 https://code.earthengine.google.com/
 
-No external dependencies required.
+No external libraries or local dependencies are required.
+
+Study Region
+
+Massachusetts, USA
+Spatial resolution: 30 meters
+Temporal coverage: 2005–2024
 
 Citation
 
@@ -163,10 +174,8 @@ Science of Remote Sensing.
 
 Notes
 
-All computations use 30 m spatial resolution.
+The workflow is scalable to other regions with asset path modification.
 
-Time range: 2005–2024.
+Designed for statewide monitoring of utility-scale solar expansion.
 
-Designed for statewide application.
-
-Scalable to other regions with asset path modification.
+Integrates time-series modeling, object-based classification, and statistical inference within a unified GEE environment.
