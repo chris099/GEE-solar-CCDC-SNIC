@@ -23,7 +23,7 @@ If you use this code, methodology, or derived products, please cite:
 Cho, K., Woodcock, C.E., et al. (2025).  
 **Detecting Utility-Scale Solar Installations and Associated Land Cover Changes Using Spatiotemporal Segmentation of Landsat Imagery.**  
 *Science of Remote Sensing*.  
-https://doi.org/10.1016/j.srs.2025.XXXXXX](https://doi.org/10.1016/j.srs.2025.100337
+https://doi.org/10.1016/j.srs.2025.100337
 
 ---
 
