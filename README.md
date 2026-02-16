@@ -16,7 +16,7 @@ All processing is implemented in Google Earth Engine.
 
 ---
 
-# 📚 Citation
+## Citation
 
 If you use this code, methodology, or derived products, please cite:
 
