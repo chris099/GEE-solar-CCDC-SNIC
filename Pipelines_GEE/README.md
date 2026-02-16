@@ -16,13 +16,7 @@ Scripts are numbered to reflect the logical processing order.
 **Global configuration file**
 
 Defines:
-- Study region (Massachusetts boundary)
-- Asset paths
-- Global parameters
-- Band definitions
-- Time range
-
-Run this first if other scripts depend on shared variables.
+- Utility functions for processing CCDC
 
 ---
 
@@ -39,7 +33,7 @@ Purpose: Optimize CCDC model stability before full run.
 ---
 
 ## 02_ccdc_run.js  
-**Main CCDC execution**
+**Main CCDC implementation**
 
 Runs harmonic time-series modeling over Landsat imagery.
 
@@ -74,7 +68,7 @@ Applies:
 - Threshold masks
 - Candidate change pixel extraction
 
-Purpose: Reduce noise before object-based classification.
+Purpose: Remove non-relevant pixels before object-based classification.
 
 ---
 
@@ -158,15 +152,7 @@ Supports unbiased area estimation.
 ---
 
 ## 11_map_results_ccdc_viewer.js  
-**CCDC results viewer**
-
-Visualization UI for:
-- Break timing
-- Magnitude
-- Slopes
-- Harmonic components
-
-Used for temporal inspection.
+**CCDC and classification results viewer**
 
 ---
 
@@ -181,7 +167,6 @@ Derives:
 Includes:
 - Yearly map visualization
 - Annual area chart
-- Export to GeoTIFF
 
 ---
 
@@ -196,11 +181,10 @@ Derives:
 Includes:
 - Yearly visualization
 - Area statistics
-- Export to GeoTIFF
 
 ---
 
-# 🖥 Execution Environment
+# 🖥 Computing Environment
 
 All scripts are designed for:
 
