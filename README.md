@@ -9,7 +9,6 @@ The framework integrates:
 - Continuous Change Detection and Classification (CCDC)
 - SNIC superpixel segmentation
 - Object-based Random Forest classification
-- Omission filtering
 - Stratified sampling for accuracy assessment
 - Design-based unbiased area estimation
 
@@ -68,7 +67,7 @@ Object-level features are used to classify:
 
 ---
 
-### 4. Omission Filtering
+### 4. Omission Finder
 Additional rule-based and probability-based filtering reduces false negatives in solar detection.
 
 ---
@@ -88,14 +87,12 @@ Implements:
 
 ---
 
-## Execution Environment
+## Computing Environment
 
 All scripts are designed for:
 
 Google Earth Engine Code Editor  
 https://code.earthengine.google.com/
-
-No local dependencies required.
 
 ---
 
